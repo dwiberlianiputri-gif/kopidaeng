@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kopi Daeng - Kedai Kopi Spesialti & Ruang Kerja</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Playfair Display & Lato -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Ikon (Lucide Standalone) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Flatpickr CSS (untuk kalender) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
+    <!-- Konfigurasi Kustom Tailwind CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Lato', 'sans-serif'],
+                        'serif': ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'brand-dark': '#1a1a1a',
+                        'brand-brown': '#4a2c2a',
+                        'brand-gold': '#d4af37',
+                        'brand-cream': '#f5f5f5',
+                        'brand-text': '#cccccc',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .page { display: none; animation: fadeIn 0.6s ease-in-out; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .nav-link { position: relative; transition: color 0.3s; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 50%; background-color: #d4af37; transition: all 0.3s ease-in-out; transform: translateX(-50%); }
+        .nav-link.active::after, .nav-link:hover::after { width: 100%; }
+        /* Style untuk Flatpickr agar sesuai tema */
+        .flatpickr-calendar { background: #1a1a1a; border: 1px solid #d4af37; }
+        .flatpickr-day { color: #cccccc; }
+        .flatpickr-day.selected { background: #d4af37; color: #1a1a1a; border-color: #d4af37; }
+        .flatpickr-day:hover { background: #4a2c2a; }
+        .flatpickr-weekday { color: #d4af37; }
+        .numInput, .arrowUp, .arrowDown { color: #cccccc !important; }
+    </style>
+</head>
+<body class="bg-brand-dark font-sans text-brand-text">
+
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-brand-dark/80 backdrop-blur-sm sticky top-0 z-50 shadow-md shadow-black/20">
+            <div class="container mx-auto px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <a href="#" class="nav-logo text-2xl font-serif font-bold text-white flex items-center gap-2">
+                        <i data-lucide="coffee"></i> Kopi Daeng
+                    </a>
+                    <nav class="hidden md:flex items-center space-x-8">
+                        <a href="#beranda" class="nav-link text-brand-text hover:text-white font-bold active" data-page="beranda">Beranda</a>
+                        <a href="#reservasi" class="nav-link text-brand-text hover:text-white font-bold" data-page="reservasi">Reservasi</a>
+                        <a href="#biji-kopi" class="nav-link text-brand-text hover:text-white font-bold" data-page="biji-kopi">Biji Kopi</a>
+                        <a href="#menu" class="nav-link text-brand-text hover:text-white font-bold" data-page="menu">Menu</a>
+                        <a href="#cerita" class="nav-link text-brand-text hover:text-white font-bold" data-page="cerita">Cerita Kami</a>
+                    </nav>
+                    <button id="mobile-menu-button" class="md:hidden text-white">
+                        <i data-lucide="menu"></i>
+                    </button>
+                </div>
+                <div id="mobile-menu" class="hidden md:hidden mt-4">
+                    <a href="#beranda" class="block py-2 text-brand-text hover:text-white nav-link font-bold" data-page="beranda">Beranda</a>
+                    <a href="#reservasi" class="block py-2 text-brand-text hover:text-white nav-link font-bold" data-page="reservasi">Reservasi</a>
+                    <a href="#biji-kopi" class="block py-2 text-brand-text hover:text-white nav-link font-bold" data-page="biji-kopi">Biji Kopi</a>
+                    <a href="#menu" class="block py-2 text-brand-text hover:text-white nav-link font-bold" data-page="menu">Menu</a>
+                    <a href="#cerita" class="block py-2 text-brand-text hover:text-white nav-link font-bold" data-page="cerita">Cerita Kami</a>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow">
+            <!-- Halaman Beranda -->
+            <div id="page-beranda" class="page active">
+                <!-- FOTO 1: GAMBAR UTAMA (HERO SECTION) -->
+                <section class="relative h-[80vh] min-h-[500px] bg-cover bg-center text-white" style="background-image: url('https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823177/pexels-mizunokozuki-13736414_rldoti.jpg');">
+                    <div class="absolute inset-0 bg-black/60"></div>
+                    <div class="relative container mx-auto px-6 h-full flex flex-col justify-center items-start text-left">
+                        <h1 class="text-4xl md:text-6xl font-serif font-bold mb-4 max-w-2xl">Temukan Ruang Kerjamu, Nikmati Seduhan Terbaik.</h1>
+                        <p class="text-lg md:text-xl max-w-xl mb-8 text-brand-text">Kombinasi sempurna antara kopi spesialti dan suasana kerja yang nyaman di jantung kota Makassar.</p>
+                        <a href="#reservasi" class="nav-link bg-brand-gold hover:bg-yellow-600 text-brand-dark font-bold py-3 px-8 rounded-sm transition-transform transform hover:scale-105" data-page="reservasi">Reservasi Meja Kerja Anda</a>
+                    </div>
+                </section>
+
+                <section class="py-16 bg-black/50">
+                    <div class="container mx-auto px-6">
+                        <div class="flex flex-col md:flex-row items-center gap-12">
+                            <div class="md:w-1/2">
+                                <!-- FOTO 2: GAMBAR PAKET UNGGULAN -->
+                                <img src="https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823173/pexels-edmond-dantes-4339913_rncsjj.jpg" alt="Suasana kerja di Kopi Daeng" class="rounded-sm shadow-xl w-full shadow-brand-gold/20">
+                            </div>
+                            <div class="md:w-1/2 text-left">
+                                <span class="text-brand-gold font-bold">PAKET UNGGULAN</span>
+                                <h2 class="text-3xl font-serif font-bold text-white my-4">Work & Brew Package</h2>
+                                <p class="text-brand-text mb-6 leading-relaxed">Dapatkan 3 jam akses meja kerja prioritas, koneksi WiFi super cepat, dan satu minuman kopi pilihan Anda. Solusi sempurna untuk produktivitas Anda.</p>
+                                <a href="#reservasi" data-page="reservasi" class="nav-link text-brand-gold font-bold hover:text-white">Pesan Paket Sekarang &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="py-16">
+                    <div class="container mx-auto px-6 text-center">
+                        <h2 class="text-3xl font-serif font-bold text-white mb-2">Bean of the Month</h2>
+                        <p class="text-brand-text mb-10">Setiap bulan, kami hadirkan biji kopi unik dari seluruh nusantara.</p>
+                        <div class="bg-brand-brown p-8 rounded-sm max-w-3xl mx-auto flex flex-col md:flex-row items-center gap-8 shadow-lg">
+                           <!-- FOTO 3: GAMBAR BEAN OF THE MONTH -->
+                           <img src="https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823158/pexels-fan-crosby-1190014-5108382_acygoy.jpg" alt="Biji Kopi Toraja Sapan" class="w-48 h-48 object-cover rounded-full border-4 border-brand-gold">
+                           <div class="text-left">
+                               <h3 class="text-2xl font-serif text-white font-bold">Toraja Sapan Peaberry</h3>
+                               <p class="text-brand-gold my-2 font-bold">Single Origin - Sulawesi Selatan</p>
+                               <p class="text-brand-text">Rasakan kekayaan cita rasa coklat, rempah, dan sentuhan akhir buah-buahan dari biji kopi lanang langka yang kami sangrai dengan medium roast.</p>
+                               <a href="#biji-kopi" data-page="biji-kopi" class="nav-link text-brand-gold font-bold hover:text-white mt-4 inline-block">Lihat Koleksi Biji Kopi &rarr;</a>
+                           </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Halaman Reservasi -->
+            <div id="page-reservasi" class="page">
+                <div class="container mx-auto px-6 py-16">
+                    <div class="max-w-2xl mx-auto text-center">
+                        <h1 class="text-4xl font-serif font-bold text-white mb-4">Reservasi Meja Kerja</h1>
+                        <p class="text-brand-text mb-10">Amankan tempat Anda untuk sesi kerja yang produktif. Mohon isi detail di bawah ini.</p>
+                    </div>
+                    <div id="reservation-wrapper" class="max-w-2xl mx-auto">
+                        <form id="reservation-form" class="bg-black/50 p-8 rounded-sm space-y-6">
+                            <div><label for="name" class="block text-brand-gold font-bold mb-2">Nama Lengkap</label><input type="text" id="name" name="name" class="w-full bg-brand-dark border border-brand-brown p-3 rounded-sm text-white focus:border-brand-gold focus:outline-none" required></div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div><label for="email" class="block text-brand-gold font-bold mb-2">Alamat Email</label><input type="email" id="email" name="email" class="w-full bg-brand-dark border border-brand-brown p-3 rounded-sm text-white focus:border-brand-gold focus:outline-none" required></div>
+                                <div><label for="whatsapp" class="block text-brand-gold font-bold mb-2">Nomor WhatsApp</label><input type="tel" id="whatsapp" name="whatsapp" class="w-full bg-brand-dark border border-brand-brown p-3 rounded-sm text-white focus:border-brand-gold focus:outline-none" required></div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div><label for="datepicker" class="block text-brand-gold font-bold mb-2">Tanggal</label><input type="text" id="datepicker" name="date" class="w-full bg-brand-dark border border-brand-brown p-3 rounded-sm text-white focus:border-brand-gold focus:outline-none" placeholder="Pilih tanggal..." required></div>
+                                <div><label for="people" class="block text-brand-gold font-bold mb-2">Jumlah Orang</label><input type="number" id="people" name="people" min="1" max="4" class="w-full bg-brand-dark border border-brand-brown p-3 rounded-sm text-white focus:border-brand-gold focus:outline-none" required></div>
+                            </div>
+                            <div>
+                                <label class="block text-brand-gold font-bold mb-2">Sesi Waktu</label>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                    <label class="p-3 bg-brand-dark border border-brand-brown rounded-sm text-center cursor-pointer has-[:checked]:bg-brand-gold has-[:checked]:text-brand-dark has-[:checked]:border-brand-gold"><input type="radio" name="session" value="Pagi" class="sr-only">Pagi (09-12)</label>
+                                    <label class="p-3 bg-brand-dark border border-brand-brown rounded-sm text-center cursor-pointer has-[:checked]:bg-brand-gold has-[:checked]:text-brand-dark has-[:checked]:border-brand-gold"><input type="radio" name="session" value="Siang" class="sr-only">Siang (13-16)</label>
+                                    <label class="p-3 bg-brand-dark border border-brand-brown rounded-sm text-center cursor-pointer has-[:checked]:bg-brand-gold has-[:checked]:text-brand-dark has-[:checked]:border-brand-gold"><input type="radio" name="session" value="Sore" class="sr-only">Sore (16-19)</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-brand-gold hover:bg-yellow-600 text-brand-dark font-bold py-4 px-8 rounded-sm text-lg transition-transform transform hover:scale-105">Kirim Reservasi</button>
+                        </form>
+                        <div id="confirmation-message" class="hidden text-center bg-green-900/50 border border-green-500 p-8 rounded-sm">
+                            <h2 class="text-2xl font-serif text-white font-bold mb-2">Terima Kasih!</h2>
+                            <p class="text-brand-text">Reservasi Anda telah kami terima. Tim kami akan segera mengirimkan konfirmasi melalui WhatsApp dalam 1x24 jam. Sampai jumpa di Kopi Daeng!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Halaman Biji Kopi -->
+            <div id="page-biji-kopi" class="page">
+                 <div class="container mx-auto px-6 py-16">
+                    <div class="max-w-2xl mx-auto text-center">
+                        <h1 class="text-4xl font-serif font-bold text-white mb-4">Bawa Pulang Rasa Kopi Daeng</h1>
+                        <p class="text-brand-text mb-10">Pilih biji kopi sangrai segar kami, hasil kurasi dari perkebunan terbaik di Indonesia.</p>
+                    </div>
+                    <div id="beans-container" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Konten Biji Kopi di-generate oleh JavaScript. Foto diatur di dalam script. -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Halaman Menu -->
+            <div id="page-menu" class="page">
+                <div class="container mx-auto px-6 py-16">
+                     <div class="max-w-4xl mx-auto">
+                        <h1 class="text-4xl font-serif font-bold text-center text-white mb-12">Menu Kami</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
+                            <div>
+                                <h2 class="text-2xl font-serif text-brand-gold border-b-2 border-brand-gold pb-2 mb-8">Berbasis Kopi</h2>
+                                <div class="space-y-8">
+                                    <!-- Menu Item 1 -->
+                                    <div class="flex items-center gap-4">
+                                        <!-- FOTO 7: MENU KOPI 1 (ESPRESSO) -->
+                                        <img src="https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823165/pexels-rquiros-1727123_ay2myf.jpg" alt="Espresso" class="w-20 h-20 object-cover rounded-sm flex-shrink-0">
+                                        <div class="flex-grow"><p class="text-white font-bold text-lg">Espresso</p></div>
+                                        <p class="text-brand-text font-semibold">18K</p>
+                                    </div>
+                                    <!-- Menu Item 2 -->
+                                    <div class="flex items-center gap-4">
+                                        <!-- FOTO 8: MENU KOPI 2 (AMERICANO) -->
+                                        <img src="https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823186/vertical-closeup-glass-ice-tea-table-lights-against-white-background_t1qcft.jpg" alt="Americano" class="w-20 h-20 object-cover rounded-sm flex-shrink-0">
+                                        <div class="flex-grow"><p class="text-white font-bold text-lg">Americano</p></div>
+                                        <p class="text-brand-text font-semibold">22K</p>
+                                    </div>
+                                    <!-- Menu Item 3 -->
+                                    <div class="flex items-center gap-4">
+                                        <!-- FOTO 9: MENU KOPI 3 (LATTE) -->
+                                        <img src="https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823158/pexels-chevanon-302890_xet8eo.jpg" alt="Cappuccino / Latte" class="w-20 h-20 object-cover rounded-sm flex-shrink-0">
+                                        <div class="flex-grow"><p class="text-white font-bold text-lg">Cappuccino / Latte</p></div>
+                                        <p class="text-brand-text font-semibold">25K</p>
+                                    </div>
+                                    <!-- Menu Item 4 -->
+                                    <div class="flex items-center gap-4">
+                                        <!-- FOTO 10: MENU KOPI 4 (KOPI SUSU) -->
+                                        <img src="https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823216/pexels-dadanr-18329787_udrvel.jpg" alt="Kopi Susu Daeng" class="w-20 h-20 object-cover rounded-sm flex-shrink-0">
+                                        <div class="flex-grow"><p class="text-white font-bold text-lg">Kopi Susu Daeng</p></div>
+                                        <p class="text-brand-text font-semibold">23K</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                               <h2 class="text-2xl font-serif text-brand-gold border-b-2 border-brand-gold pb-2 mb-8">Non-Kopi & Makanan</h2>
+                                <div class="space-y-8">
+                                     <!-- Menu Item 5 -->
+                                    <div class="flex items-center gap-4">
+                                        <!-- FOTO 11: MENU NON-KOPI 1 (COKLAT) -->
+                                        <img src="https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823767/glass-milk-with-straw-chocolate-sauce-gray-background-high-quality-photo_cw0kjt.jpg" alt="Chocolate" class="w-20 h-20 object-cover rounded-sm flex-shrink-0">
+                                        <div class="flex-grow"><p class="text-white font-bold text-lg">Chocolate</p></div>
+                                        <p class="text-brand-text font-semibold">25K</p>
+                                    </div>
+                                    <!-- Menu Item 6 -->
+                                    <div class="flex items-center gap-4">
+                                        <!-- FOTO 12: MENU NON-KOPI 2 (MATCHA) -->
+                                        <img src="https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823173/pexels-gulsum-coban-844585548-32713603_ichu07.jpg" alt="Matcha Latte" class="w-20 h-20 object-cover rounded-sm flex-shrink-0">
+                                        <div class="flex-grow"><p class="text-white font-bold text-lg">Matcha Latte</p></div>
+                                        <p class="text-brand-text font-semibold">27K</p>
+                                    </div>
+                                    <!-- Menu Item 7 -->
+                                    <div class="flex items-center gap-4">
+                                        <!-- FOTO 13: MENU MAKANAN 1 (CROISSANT) -->
+                                        <img src="https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823155/pexels-alex-cooper-358580-972838_kufrbo.jpg" alt="Croissant" class="w-20 h-20 object-cover rounded-sm flex-shrink-0">
+                                        <div class="flex-grow"><p class="text-white font-bold text-lg">Croissant</p></div>
+                                        <p class="text-brand-text font-semibold">20K</p>
+                                    </div>
+                                    <!-- Menu Item 8 -->
+                                    <div class="flex items-center gap-4">
+                                        <!-- FOTO 14: MENU MAKANAN 2 (PISANG GORENG) -->
+                                        <img src="https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823191/almond-banana-pancake_aqxxte.jpg" alt="Pisang Goreng Gula Aren" class="w-20 h-20 object-cover rounded-sm flex-shrink-0">
+                                        <div class="flex-grow"><p class="text-white font-bold text-lg">Pisang Goreng Gula Aren</p></div>
+                                        <p class="text-brand-text font-semibold">18K</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+
+            <!-- Halaman Cerita -->
+            <div id="page-cerita" class="page">
+                 <div class="container mx-auto px-6 py-16">
+                    <div class="max-w-3xl mx-auto">
+                        <h1 class="text-4xl font-serif font-bold text-center text-white mb-10">Cerita di Balik Seduhan</h1>
+                        <!-- FOTO 15: GAMBAR UTAMA HALAMAN CERITA -->
+                        <img src="https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823166/pexels-ffawdyy-13294517_mj9nwa.jpg" alt="Interior Kopi Daeng" class="rounded-sm shadow-xl w-full mb-10 shadow-black/30">
+                        <div class="text-brand-text leading-relaxed space-y-4 text-lg">
+                            <p>Kopi Daeng bukan sekadar kedai kopi. Ia adalah sebuah ruang. Ruang untuk bertemu, ruang untuk berkarya, dan ruang untuk menikmati jeda di tengah hiruk pikuk kota. Lahir dari kecintaan kami pada kopi nusantara dan budaya komunal Makassar...</p>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        </main>
+        
+        <footer class="bg-black/50 text-center py-8 px-6 mt-16">
+            <p class="font-serif text-lg text-white">Kopi Daeng</p>
+            <p class="text-brand-text mt-2 text-sm">Jl. Cendrawasih No. 45, Makassar, Sulawesi Selatan</p>
+            <p class="text-xs text-stone-500 mt-6">&copy; 2025 Kopi Daeng. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Modal untuk Detail Biji Kopi -->
+    <div id="bean-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div id="bean-modal-content" class="bg-brand-dark max-w-lg w-full rounded-sm shadow-2xl relative border border-brand-gold/50">
+            <!-- Konten modal di-generate oleh JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            
+            flatpickr("#datepicker", { dateFormat: "d-m-Y", minDate: "today" });
+            
+            // Data Biji Kopi
+            const coffeeBeans = [
+                // FOTO 4: BIJI KOPI 1
+                { id: 1, name: 'Toraja Sapan Peaberry', origin: 'Sulawesi Selatan', price: '125K', notes: 'Coklat, rempah, buah-buahan.', image: 'https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823158/pexels-fan-crosby-1190014-5108382_acygoy.jpg' },
+                // FOTO 5: BIJI KOPI 2
+                { id: 2, name: 'Gayo Wine', origin: 'Aceh', price: '150K', notes: 'Aroma anggur merah, asam buah, dan manis yang kompleks.', image: 'https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823738/delicious-high-quality-wine-still-life_riupet.jpg' },
+                // FOTO 6: BIJI KOPI 3
+                { id: 3, name: 'Kintamani Natural', origin: 'Bali', price: '110K', notes: 'Segar, dengan sentuhan rasa jeruk dan sedikit floral.', image: 'https://res.cloudinary.com/dtjqz7wdf/image/upload/v1757823733/bowls-with-coffee-beans-near-coffee-grinder_ttpa8b.jpg' }
+            ];
+
+            const pages = document.querySelectorAll('.page');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const reservationForm = document.getElementById('reservation-form');
+            const confirmationMessage = document.getElementById('confirmation-message');
+            
+            const navigateToPage = (pageId) => {
+                pages.forEach(page => page.classList.remove('active'));
+                const targetPage = document.getElementById(`page-${pageId}`);
+                if (targetPage) targetPage.classList.add('active');
+                
+                navLinks.forEach(link => link.classList.toggle('active', link.dataset.page === pageId));
+                window.scrollTo(0, 0);
+                mobileMenu.classList.add('hidden');
+            };
+            
+            navLinks.forEach(link => link.addEventListener('click', (e) => { e.preventDefault(); navigateToPage(link.dataset.page); }));
+            document.querySelector('.nav-logo').addEventListener('click', (e) => { e.preventDefault(); navigateToPage('beranda'); });
+            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+            if(reservationForm) {
+                reservationForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    reservationForm.style.display = 'none';
+                    if(confirmationMessage) confirmationMessage.style.display = 'block';
+                });
+            }
+            
+            const beansContainer = document.getElementById('beans-container');
+            if(beansContainer) {
+                beansContainer.innerHTML = coffeeBeans.map(bean => `
+                    <div class="bg-black/50 rounded-sm overflow-hidden text-center p-6 border border-brand-brown hover:border-brand-gold transition-all">
+                        <img src="${bean.image}" alt="${bean.name}" class="w-full h-56 object-cover rounded-sm mb-4">
+                        <h3 class="text-xl font-serif text-white font-bold">${bean.name}</h3>
+                        <p class="text-brand-gold text-sm font-bold mb-4">${bean.origin}</p>
+                        <button class="open-modal-btn text-brand-dark bg-brand-gold font-bold py-2 px-6 rounded-sm" data-id="${bean.id}">Lihat Detail</button>
+                    </div>
+                `).join('');
+            }
+            
+            const beanModal = document.getElementById('bean-modal');
+            const beanModalContent = document.getElementById('bean-modal-content');
+
+            const openModal = (beanId) => {
+                const bean = coffeeBeans.find(b => b.id === beanId);
+                if (!bean || !beanModal || !beanModalContent) return;
+                
+                beanModalContent.innerHTML = `
+                    <button class="close-modal-btn absolute top-3 right-3 text-white text-3xl leading-none">&times;</button>
+                    <div class="flex flex-col md:flex-row">
+                        <img src="${bean.image}" alt="${bean.name}" class="w-full md:w-1/2 h-64 md:h-auto object-cover">
+                        <div class="p-6">
+                            <h2 class="text-2xl font-serif text-white font-bold">${bean.name}</h2>
+                            <p class="text-brand-gold my-1 font-bold">${bean.origin}</p>
+                            <p class="text-brand-text my-4">${bean.notes}</p>
+                            <p class="text-3xl font-bold text-white mb-4">${bean.price}</p>
+                            <a href="https://wa.me/6281234567890?text=Halo%20Kopi%20Daeng,%20saya%20tertarik%20dengan%20biji%20kopi%20${bean.name}" target="_blank" class="w-full text-center block bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-sm">Beli via WhatsApp</a>
+                        </div>
+                    </div>
+                `;
+                beanModal.classList.remove('hidden');
+            };
+
+            const closeModal = () => beanModal && beanModal.classList.add('hidden');
+
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.open-modal-btn')) {
+                    openModal(parseInt(e.target.closest('.open-modal-btn').dataset.id));
+                }
+                if (e.target.closest('.close-modal-btn') || e.target === beanModal) {
+                    closeModal();
+                }
+            });
+
+            const initialPage = window.location.hash.substring(1) || 'beranda';
+            navigateToPage(initialPage);
+        });
+    </script>
+</body>
+</html>
+
